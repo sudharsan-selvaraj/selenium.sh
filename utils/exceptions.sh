@@ -7,6 +7,8 @@ export NC='\033[0m' # No Color
 #########################################################
 #                    EXCEPTION CODES                    #
 #########################################################
+export EXCEPTION=255
+
 export SCRIPT_TIMEOUT_EXCEPTION=79
 export ELEMENT_CLICK_INTERCEPTED_EXCEPTION=80
 export ELEMENT_NOT_SELECTABLE_EXCEPTION=81
@@ -86,9 +88,39 @@ __GET_WEBDRIVER_ERRORCODE__() {
   echo $(echo $W3C_EXCEPTION | "$jq" -r '.'$W3C_CODE'')
 }
 
+__DISPATCH_ERROR__() {
+  ##
+  ## Get the subshell process ID in which the current code is getting executed
+  ##
+  local SUBSHELL_ID=$(exec sh -c 'echo "$PPID"')
+
+  ##
+  ## $BASH_SUBSHELL command is used to check if the current execution is inside subshell or not
+  ## if $BASH_SUBSHELL is 0, then the execution is not inside the subshell
+  ##
+
+  if [ "$BASH_SUBSHELL" -gt 0 ] && [ "$SUBSHELL_ID" != ${__TRY_CATCH_SUBSHELL_ID__} ]; then
+    ##
+    ## If the execution is inside the sub shell, then construct the exception string which will throw error when invoked further
+    ##
+    echo "$@"
+  else
+    ##
+    ## If the execution is not inside the sub shell, directly raise the execption
+    ##
+    $@
+  fi
+}
+
 __CHECK_AND_THROW_ERROR__() {
-  local JSON_RESPONSE=$1
-  local ERROR=$(echo $JSON_RESPONSE | "$jq" -r '.value.error')
+
+  if [[ "$1" == "__EXCEPTION__"* ]]; then
+    __DISPATCH_ERROR__ $1
+    throw $EXCEPTION
+  fi
+
+  local JSON_RESPONSE=$(echo "$1" | tr -d "\r\n" | sed '')
+  local ERROR=$(echo $JSON_RESPONSE | "$jq" -r 'try(.value.error) // "null"')
   ##
   ## Check if webdriver response contains error key.
   ## if, error is not present "jq" will return "null"
@@ -98,29 +130,9 @@ __CHECK_AND_THROW_ERROR__() {
     ## Obtain numeric error code from webdriver error code
     ##
     local ERROR_CODE=$(__GET_WEBDRIVER_ERRORCODE__ "$ERROR")
-    local ERROR_MESSAGE=$(echo $JSON_RESPONSE | "$jq" -r '.value.message')
-
-    ##
-    ## Get the subshell process ID in which the current code is getting executed
-    ##
-    local SUBSHELL_ID=$(exec sh -c 'echo "$PPID"')
-
-    ##
-    ## $BASH_SUBSHELL command is used to check if the current execution is inside subshell or not
-    ## if $BASH_SUBSHELL is 0, then the execution is not inside the subshell
-    ##
-    if [ "$BASH_SUBSHELL" -gt 0 ] && [ "$SUBSHELL_ID" != ${__TRY_CATCH_SUBSHELL_ID__} ]; then
-      ##
-      ## If the execution is inside the sub shell, then construct the exception string which will throw error when invoked further
-      ##
-      exe_command=(__EXCEPTION__ $ERROR_CODE $(echo "$ERROR" | sed 's/ /_/g') $ERROR_MESSAGE)
-      echo "${exe_command[@]} "
-    else
-      ##
-      ## If the execution is not inside the sub shell, directly raise the execption
-      ##
-      __EXCEPTION__ $ERROR_CODE "$(echo "$ERROR" | sed 's/ /_/g')" "$ERROR_MESSAGE"
-    fi
+    local ERROR_MESSAGE=$(echo $JSON_RESPONSE | "$jq" -r '.value.message?')
+    local EXCEPTION_STRING=(__EXCEPTION__ $ERROR_CODE $(echo "$ERROR" | sed 's/ /_/g') $ERROR_MESSAGE "[end] ")
+    __DISPATCH_ERROR__ "${EXCEPTION_STRING[@]} "
     throw $ERROR_CODE
   fi
 }
@@ -154,16 +166,28 @@ __EXCEPTION__() {
   ## it will get split  and will be passed as individual parameter.
   ## So, we need to construct the message back by looping through the parameters.
   ##
-
+  local parameter_count=$#
+  local exception_name=$2
   local message=""
-  for ((n = 3; n <= ("$#"); n++)); do
+
+  if [[ "$exception_name" != *"EXCEPTION" ]]; then
+    exception_name="$exception_name_EXCEPTION"
+  fi
+
+  for ((n = 3; n <= $parameter_count; n++)); do
+    if [[ "${!n}" == "[end]"* ]]; then
+      break
+    fi
     message="${message} ${!n}"
   done
+
+  message=$(echo "$message" | sed 's/\[end\]//g')
+
   if [ "$__inside_try__" == "false" ]; then
     ##
     ## If not executed inside try catch, print the error message in console
     ##
-    printf "${RED}$(echo "$2" | tr '[a-z]' '[A-Z]')_EXCEPTION: $message ${NC}"
+    printf "${RED}$(echo "$2" | tr '[a-z]' '[A-Z]'): $message ${NC}"
     printf "$(__GET_STACK_TRACE__)"
   fi
   throw $1

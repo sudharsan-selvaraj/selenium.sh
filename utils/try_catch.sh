@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 __inside_try__="false"
 __PARENT_BASH_ID="$$"
 __TRY_CATCH_SUBSHELL_ID__=0
