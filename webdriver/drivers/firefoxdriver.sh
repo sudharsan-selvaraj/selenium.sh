@@ -31,6 +31,6 @@ function __start_firefox_driver__() {
   local firefox_option="$2"
   local port=$(__get_free_port__)
   __start_driver__ "$driver_path" "$port"
-  local capabilities='{ "capabilities": { "alwaysMatch" : { "browserName":"firefox" , "moz:firefoxOptions" : '${firefox_option}' } }  }'
-  echo "$(RemoteWebDriver http://localhost:${port} "$capabilities")"
+  local capabilities='{ "browserName":"firefox" , "moz:firefoxOptions" : '${firefox_option}' }'
+  echo "$(RemoteWebDriver -u http://localhost:${port} -c "$capabilities")"
 }

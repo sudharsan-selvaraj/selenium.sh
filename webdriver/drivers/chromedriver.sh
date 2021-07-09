@@ -31,6 +31,6 @@ function __chrome_driver_start__() {
   local chrome_options="$2"
   local port=$(__get_free_port__)
   __start_driver__ "$driver_path" "$port"
-  local capabilities='{ "capabilities": { "alwaysMatch" : { "browserName":"chrome" , "goog:chromeOptions" : '${chrome_options}' } }  }'
-  echo "$(RemoteWebDriver http://localhost:${port} "$capabilities")"
+  local capabilities='{ "browserName":"chrome" , "goog:chromeOptions" : '${chrome_options}' }'
+  echo "$(RemoteWebDriver -u "http://localhost:${port}" -c "${capabilities}")"
 }

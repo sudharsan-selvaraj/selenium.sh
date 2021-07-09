@@ -1,5 +1,5 @@
 function RemoteWebDriver() {
-  local selenium_address=${CHROME_DRIVER_PATH}
+  local selenium_address=''
   local capabilities=''
   ##
   ## Parse arguments
@@ -34,6 +34,5 @@ function RemoteWebDriver() {
 function __remote_webdriver_start__() {
   local selenium_address="$1"
   local capabilities='{ "capabilities" : { "alwaysMatch": '${2}' } }'
-
   echo "$(__CREATE_DRIVER__ "$selenium_address" "$capabilities")"
 }

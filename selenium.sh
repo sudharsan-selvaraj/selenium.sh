@@ -21,6 +21,7 @@ source ${SELENIUM_SOURCE_DIR}/webdriver/element.sh
 ## drivers
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/remote_webdriver.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/chromedriver.sh
+source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/firefoxdriver.sh
 
 ## Check and load the respective HTTP provided between cURL and wget
 function load_http_provider() {

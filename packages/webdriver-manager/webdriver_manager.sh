@@ -174,14 +174,12 @@ function firefoxdriver() {
   local driver_file_name="geckodriver-v${driver_version}-${os_name}${os_arch}.tar.gz"
   local download_url="https://github.com/mozilla/geckodriver/releases/download/v${driver_version}/${driver_file_name}"
 
-  echo "$driver_version"
   local download_directory="${CACHE_DIR}/firefox/${driver_version}"
 
-  if [ -f "${download_directory}/firefox" ]; then
-    export FIREFOX_DRIVER_PATH="${download_directory}/firefox"
+  if [ -f "${download_directory}/geckodriver" ]; then
+    export FIREFOX_DRIVER_PATH="${download_directory}/geckodriver"
   else
     mkdir -p ${download_directory}
-    echo "$download_url"
     local curl_output=$($(cd "$download_directory" && (curl -sSL "$download_url") > ${driver_file_name}) && echo "${download_directory}")
     if [ ! -z "${curl_output}" ]; then
       $(cd ${download_directory} && tar -xvzf "${driver_file_name}" &1>/dev/null)

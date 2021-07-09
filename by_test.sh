@@ -1,6 +1,8 @@
 . selenium.sh
+. packages/webdriver-manager/webdriver_manager.sh
 
-driver=$(__CREATE_DRIVER__ "http://localhost:4444/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrome" } } }')
+webdrivermanager --browser "firefox"
+driver=$(FirefoxDriver)
 $driver.get "https://www.google.com"
 
 search_input=$($driver.findElement "$(ByCssSelector '[action=\"/search\"]')" "$(ByName "q")")
@@ -26,6 +28,5 @@ echo $(
 )
 
 $($driver.findElement "$(ByName "q")").sendKeys "TestNinja"
-sleep 10
 echo $($($driver.findElement "$(ByTagName "img")").getAttribute "src")
 $driver.quit
