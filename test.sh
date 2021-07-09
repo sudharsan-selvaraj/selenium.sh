@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-. webdriver/commands.sh
+. selenium.sh
 
-__CREATE_DRIVER__ "http://localhost:4445/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrsome" } } }'
+#__CREATE_DRIVER__ "http://localhost:4444/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrsome" } } }'
 
 try
 (
@@ -10,7 +10,7 @@ try
   try
   (
     begin
-    driver=$(__CREATE_DRIVER__ "http://localhost:4445/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrsome" } } }')
+    driver=$(__CREATE_DRIVER__ "http://localhost:4444/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrsome" } } }')
     $driver.click
   )
   catch || {
@@ -22,7 +22,7 @@ try
     esac
   }
 
-  driver=$(__CREATE_DRIVER__ "http://localhost:4445/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrsome" } } }')
+  driver=$(__CREATE_DRIVER__ "http://localhost:4444/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrsome" } } }')
   $driver.click
 )
 catch || {

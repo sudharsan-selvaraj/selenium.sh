@@ -10,6 +10,7 @@ export jq="/Users/sselvaraj/Desktop/iproov authentication/jq-osx-amd64"
 ## utils
 source ${SELENIUM_SOURCE_DIR}/utils/try_catch.sh
 source ${SELENIUM_SOURCE_DIR}/utils/exceptions.sh
+source ${SELENIUM_SOURCE_DIR}/utils/driver_utils.sh
 
 ## webdriver
 source ${SELENIUM_SOURCE_DIR}/webdriver/commands/index.sh
@@ -17,6 +18,9 @@ source ${SELENIUM_SOURCE_DIR}/webdriver/by.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/webdriver.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/element.sh
 
+## drivers
+source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/remote_webdriver.sh
+source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/chromedriver.sh
 
 ## Check and load the respective HTTP provided between cURL and wget
 function load_http_provider() {

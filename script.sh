@@ -1,16 +1,22 @@
 . selenium.sh
+. packages/webdriver-manager/webdriver_manager.sh
 
-driver=$(__CREATE_DRIVER__ "http://localhost:4444/wd/hub" '{ "capabilities": { "alwaysMatch" : { "browserName": "chrome" } } }')
-
-$driver.get "https://www.google.com"
-echo $($driver.getTitle)
-$driver.refresh
-$driver.get "https://www.facebook.com"
-echo $($driver.getTitle)
-$driver.back
-echo $($driver.getTitle)
-$driver.forward
-$driver.quit
-
-#res=$(cat out.txt )
-#echo $( echo $res | "$jq" '.value.message')
+webdrivermanager --browser "firefox"
+#echo "${CHROME_DRIVER_PATH}"
+#
+##driver=$(ChromeDriver --chrome_options "{ \"args\": [\"--headless\"] }")
+#driver=$(RemoteWebDriver --url "http://localhost:4444/wd/hub" --capabilities '{ "browserName": "chrome"  }')
+#
+#$driver.get "https://www.google.com"
+#echo $($driver.getTitle)
+#
+#$driver.refresh
+#
+#$driver.get "https://www.facebook.com"
+#echo $($driver.getTitle)
+#
+#$driver.back
+#echo $($driver.getTitle)
+#
+#$driver.forward
+#$driver.quit

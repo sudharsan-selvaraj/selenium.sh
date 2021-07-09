@@ -13,6 +13,7 @@ __CREATE_DRIVER__() {
   local BASE_URL=$1
   local CAPABILITIES=$2
 
+  echo "$CAPABILITIES" > response.txt
   local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session" "${CAPABILITIES}")
   __CHECK_AND_THROW_ERROR__ "$response"
   __PROCESS_RESPONSE__ "__WEBDRIVER__ $BASE_URL $(echo "$response" | "$jq" -r '.value.sessionId') "
