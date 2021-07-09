@@ -2,7 +2,8 @@
 . packages/webdriver-manager/webdriver_manager.sh
 
 webdrivermanager --browser "firefox"
-driver=$(FirefoxDriver)
+webdrivermanager --browser "chrome"
+driver=$(RemoteWebDriver --url "http://localhost:4444/wd/hub" --capabilities '{ "browserName" : "chrome" }')
 $driver.get "https://www.google.com"
 
 search_input=$($driver.findElement "$(ByCssSelector '[action=\"/search\"]')" "$(ByName "q")")

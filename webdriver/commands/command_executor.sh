@@ -10,7 +10,8 @@ __FIND_ELEMENT__() {
   for ((n = 4; n <= $#; n++)); do
     local response=$(__EXECUTE_WD_COMMAND__ "POST" "$endpoint" "${!n}")
     __CHECK_AND_THROW_ERROR__ "$response"
-    local element_id=$(__HANDLE_FIND_ELEMENT_RESPONSE__ $response)
+    local element_ref=$(__HANDLE_FIND_ELEMENT_RESPONSE__ $response)
+    local element_id=$(echo "$element_ref" | sed 's/.*\[\([^]]*\)=\([^]]*\)\]/\2/g')
     endpoint="${search_context}/element/${element_id}/element"
   done
 
@@ -26,7 +27,7 @@ __FIND_ELEMENTS__() {
   local endpoint="${search_context}/elements"
   local response=$(__EXECUTE_WD_COMMAND__ "POST" "$endpoint" "${by}")
   __CHECK_AND_THROW_ERROR__ "$response"
-  local element_ids=$(echo "$response" | "$jq" -r '.value[] | to_entries[] | .value')
+  local element_ids=$(echo "$response" | "$jq" -r '.value[] | to_entries[] | "[" + (.key|tostring) + "=" + .value + "]"')
   __PROCESS_RESPONSE__ "__WEB_ELEMENTS__ ${selenium_address} ${session_id} $(echo $element_ids  | tr '\n' ' ') [end] "
 
 }
@@ -58,7 +59,7 @@ __HANDLE_VALUE_RESPONSE__() {
 }
 
 __HANDLE_FIND_ELEMENT_RESPONSE__() {
-  __PROCESS_RESPONSE__ "$(echo "$1" | "$jq" -r '.value | with_entries(select(.key|match("element")))[]')"
+  __PROCESS_RESPONSE__ "$(echo "$1" | "$jq" -r '.value | to_entries | map("[\(.key)=\(.value)]") | .[] ')"
 }
 
 #######################################################################################

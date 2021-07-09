@@ -18,9 +18,7 @@ __start_driver__() {
 }
 
 __wait_for_port__() {
-
   while [[ "$(nc -vz 127.0.0.1 "$1" 2>&1)" == *"failed"* ]]; do
-      echo "$(nc -vz 127.0.0.1 "$1" 2>&1)"
       sleep 5
   done
 }

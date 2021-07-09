@@ -132,6 +132,7 @@ __CHECK_AND_THROW_ERROR__() {
     local ERROR_CODE=$(__GET_WEBDRIVER_ERRORCODE__ "$ERROR")
     local ERROR_MESSAGE=$(echo $JSON_RESPONSE | "$jq" -r '.value.message?')
     local EXCEPTION_STRING=(__EXCEPTION__ $ERROR_CODE $(echo "$ERROR" | sed 's/ /_/g') $ERROR_MESSAGE "[end] ")
+
     __DISPATCH_ERROR__ "${EXCEPTION_STRING[@]} "
     throw $ERROR_CODE
   fi

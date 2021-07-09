@@ -146,12 +146,13 @@ function chromedriver() {
 
   if [ -f "${download_directory}/chromedriver" ]; then
     export CHROME_DRIVER_PATH="${download_directory}/chromedriver"
+    echo "Using chromedriver from ${CHROME_DRIVER_PATH}"
   else
     mkdir -p ${download_directory}
     download_url=$(echo "$download_url" | sed 's/{driver_version}/'${driver_version}'/')
     local curl_output=$($(cd "$download_directory" && curl -sS -O "$download_url") && echo "${download_directory}")
     if [ ! -z "${curl_output}" ]; then
-      $(cd ${download_directory} && unzip "chromedriver_$(__get_os__)64.zip")
+      $(cd ${download_directory} && unzip "chromedriver_$(__get_os__)64.zip" &>/dev/null)
       export CHROME_DRIVER_PATH="${download_directory}/chromedriver"
     fi
   fi

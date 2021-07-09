@@ -53,7 +53,7 @@ __ELEMENT_GET_ATTRIBUTE__() {
 }
 
 ##
-## Method to enter text in input fields
+## Method to click a webelement
 ##
 __ELEMENT_CLICK__() {
   local base_url=$1
@@ -61,5 +61,17 @@ __ELEMENT_CLICK__() {
   local element_id=$3
 
   local response=$(__EXECUTE_WD_COMMAND__ "POST" "${base_url}/session/${session_id}/element/${element_id}/click" "{}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to get the text from webelement
+##
+__ELEMENT_GET_TEXT__() {
+  local base_url=$1
+  local session_id=$2
+  local element_id=$3
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${base_url}/session/${session_id}/element/${element_id}/text")
   __HANDLE_VALUE_RESPONSE__ "$response"
 }

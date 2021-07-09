@@ -7,9 +7,9 @@ webdrivermanager --browser "firefox"
 #
 #FirefoxDriver
 echo "FirefoxDriver"
-#driver=$(FirefoxDriver)
+driver=$(FirefoxDriver)
 #driver=$(ChromeDriver --chrome_options "{ \"args\": [\"--headless\"] }")
-driver=$(RemoteWebDriver --url "http://localhost:4444/wd/hub" --capabilities '{ "browserName": "chrome"  }')
+#driver=$(RemoteWebDriver --url "http://localhost:4444/wd/hub" --capabilities '{ "browserName": "chrome"  }')
 
 $driver.get "https://www.google.com"
 echo $($driver.getTitle)
@@ -21,6 +21,8 @@ echo $($driver.getTitle)
 
 $driver.back
 echo $($driver.getTitle)
+
+echo $($($driver.findElement "$(ByCssSelector "a")").getAttribute "href")
 
 $driver.forward
 $driver.quit
