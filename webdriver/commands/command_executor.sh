@@ -62,6 +62,11 @@ __HANDLE_FIND_ELEMENT_RESPONSE__() {
   __PROCESS_RESPONSE__ "$(echo "$1" | "$jq" -r '.value | to_entries | map("[\(.key)=\(.value)]") | .[] ')"
 }
 
+__HANDLE_TIMEOUT_RESPONSE__() {
+  __CHECK_AND_THROW_ERROR__ "$1"
+  __PROCESS_RESPONSE__ "$(echo "$1" | "$jq" -r '.value.'$2'')"
+}
+
 #######################################################################################
 #                               HTTP REQUEST WRAPPER                                  #
 #######################################################################################

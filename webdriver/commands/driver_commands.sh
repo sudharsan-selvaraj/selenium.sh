@@ -9,7 +9,7 @@ source "${SELENIUM_SOURCE_DIR}/webdriver/commands/command_executor.sh"
 ##
 ## Method to open a new browser
 ##
-__CREATE_DRIVER__() {
+function __CREATE_DRIVER__() {
   local BASE_URL=$1
   local CAPABILITIES=$2
 
@@ -21,7 +21,7 @@ __CREATE_DRIVER__() {
 ##
 ## Method to open the URL
 ##
-__DRIVER_GET__() {
+function __DRIVER_NAVIGATE_TO__() {
   local BASE_URL=$1
   local SESSION_ID=$2
   local URL=$3
@@ -33,9 +33,20 @@ __DRIVER_GET__() {
 }
 
 ##
+## Method to get the current URL
+##
+function __DRIVER_GET_URL__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/url")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
 ## Method to get the current page title
 ##
-__DRIVER_GET_TITLE__() {
+function __DRIVER_GET_TITLE__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -46,7 +57,7 @@ __DRIVER_GET_TITLE__() {
 ##
 ## Method to get the current page source
 ##
-__DRIVER_GET_PAGE_SOURCE__() {
+function __DRIVER_GET_PAGE_SOURCE__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -57,7 +68,7 @@ __DRIVER_GET_PAGE_SOURCE__() {
 ##
 ## Method to refresh the current page
 ##
-__DRIVER_PAGE_REFRESH__() {
+function __DRIVER_PAGE_REFRESH__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -68,7 +79,7 @@ __DRIVER_PAGE_REFRESH__() {
 ##
 ## Method naviagte back
 ##
-__DRIVER_NAVIGATE_BACK__() {
+function __DRIVER_NAVIGATE_BACK__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -79,7 +90,7 @@ __DRIVER_NAVIGATE_BACK__() {
 ##
 ## Method navigate forward
 ##
-__DRIVER_NAVIGATE_FORWARD__() {
+function __DRIVER_NAVIGATE_FORWARD__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -90,7 +101,7 @@ __DRIVER_NAVIGATE_FORWARD__() {
 ##
 ## Method to get screenshot
 ##
-__DRIVER_GET_SCREENSHOT__() {
+function __DRIVER_GET_SCREENSHOT__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -101,7 +112,7 @@ __DRIVER_GET_SCREENSHOT__() {
 ##
 ## Method to find element
 ##
-__DRIVER_FIND_ELEMENT__() {
+function __DRIVER_FIND_ELEMENT__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -111,7 +122,7 @@ __DRIVER_FIND_ELEMENT__() {
 ##
 ## Method to find element
 ##
-__DRIVER_FIND_ELEMENTS__() {
+function __DRIVER_FIND_ELEMENTS__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
@@ -119,12 +130,116 @@ __DRIVER_FIND_ELEMENTS__() {
 }
 
 ##
-## Method to close the driver session
+## Method to quit the driver session
 ##
-__DRIVER_QUIT__() {
+function __DRIVER_QUIT__() {
   local BASE_URL=$1
   local SESSION_ID=$2
 
   local response=$(__EXECUTE_WD_COMMAND__ "DELETE" "${BASE_URL}/session/${SESSION_ID}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to close the driver session
+##
+function __DRIVER_CLOSE__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "DELETE" "${BASE_URL}/session/${SESSION_ID}/window")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+###############################################################################################
+#                                   TIMEOUT METHODS                                           #
+###############################################################################################
+
+##
+## Method to get the timeout details
+##
+function __DRIVER_GET_TIMEOUTS__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local timeout_name="$3"
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/timeouts")
+  __HANDLE_TIMEOUT_RESPONSE__ "$response" "$timeout_name"
+}
+
+##
+## Method to get the timeout details
+##
+function __DRIVER_SET_TIMEOUTS__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local timeout_name="$3"
+  local timeout_value="$4"
+
+  ## construct the post body
+  local body='{ "'${timeout_name}'" : '${timeout_value}'}'
+  echo "$body" >>response.txt
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/timeouts" "${body}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+###############################################################################################
+#                                    WINDOW METHODS                                           #
+###############################################################################################
+
+##
+## Get current window handles
+##
+function __DRIVER_GET_WINDOW_HANDLE__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/window")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Get current window handles
+##
+function __DRIVER_SWITCH_WINDOW__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local WINDOW_HANDLE="$3"
+
+  local body='{ "handle" : "'$3'" }'
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Make browser to fullscreen
+##
+function __DRIVER_WINDOW_FULLSCREEN__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/fullscreen" "{}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Maximize browser window size
+##
+function __DRIVER_WINDOW_MAXIMIZE__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/maximize" "{}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Minimize the browser window
+##
+function __DRIVER_WINDOW_MINIMIZE__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/minimize" "{}")
   __HANDLE_VALUE_RESPONSE__ "$response"
 }

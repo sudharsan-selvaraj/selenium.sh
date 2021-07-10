@@ -9,7 +9,10 @@ __WEBDRIVER__() {
   case "$method" in
   ".get")
     local navigate_to_url="$4"
-    __DRIVER_GET__ "$selenium_address" "$session_id" "$navigate_to_url"
+    __DRIVER_NAVIGATE_TO__ "$selenium_address" "$session_id" "$navigate_to_url"
+    ;;
+  ".getCurrentUrl")
+    __DRIVER_GET_URL__ "$selenium_address" "$session_id"
     ;;
   ".getTitle")
     __DRIVER_GET_TITLE__ "$selenium_address" "$session_id"
@@ -26,7 +29,7 @@ __WEBDRIVER__() {
   ".forward")
     __DRIVER_NAVIGATE_FORWARD__ "$selenium_address" "$session_id"
     ;;
-  ".screenShot"  | ".getScreenShot")
+  ".screenShot" | ".getScreenShot")
     __DRIVER_GET_SCREENSHOT__ "$selenium_address" "$session_id"
     ;;
   ".findElement")
@@ -35,10 +38,50 @@ __WEBDRIVER__() {
   ".findElements")
     __DRIVER_FIND_ELEMENTS__ "$selenium_address" "$session_id" "${@:4}"
     ;;
+  ".setScriptTimeout")
+    __DRIVER_SET_TIMEOUTS__ "$selenium_address" "$session_id" "script" "$4"
+    ;;
+  ".getScriptTimeout")
+    __DRIVER_GET_TIMEOUTS__ "$selenium_address" "$session_id" "script"
+    ;;
+  ".setPageLoadTime")
+    __DRIVER_SET_TIMEOUTS__ "$selenium_address" "$session_id" "pageLoad" "$4"
+    ;;
+  ".getPageLoadTime")
+    __DRIVER_GET_TIMEOUTS__ "$selenium_address" "$session_id" "pageLoad"
+    ;;
+  ".setImplicitWait")
+    __DRIVER_SET_TIMEOUTS__ "$selenium_address" "$session_id" "implicit" "$4"
+    ;;
+  ".getImplicitWait")
+    __DRIVER_GET_TIMEOUTS__ "$selenium_address" "$session_id" "implicit"
+    ;;
+
+    ###################################################################################
+    #                               WINDOW METHODS                                    #
+    ###################################################################################
+  ".getWindowHandle")
+    __DRIVER_GET_WINDOW_HANDLE__ "$selenium_address" "$session_id"
+    ;;
+  ".switchTo.window")
+    __DRIVER_SWITCH_WINDOW__ "$selenium_address" "$session_id" "$4"
+    ;;
+  ".window.fullscreen")
+    __DRIVER_WINDOW_FULLSCREEN__ "$selenium_address" "$session_id"
+    ;;
+  ".window.maximize")
+    __DRIVER_WINDOW_MAXIMIZE__ "$selenium_address" "$session_id"
+    ;;
+  ".window.minimize")
+    __DRIVER_WINDOW_MINIMIZE__ "$selenium_address" "$session_id"
+    ;;
+
   ".quit")
     __DRIVER_QUIT__ "$selenium_address" "$session_id"
     ;;
-
+  ".close")
+    __DRIVER_CLOSE__ "$selenium_address" "$session_id"
+    ;;
   esac
 
 }
