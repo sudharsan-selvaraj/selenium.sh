@@ -70,4 +70,17 @@ window_handle_test() {
   echo $($driver.switchTo.window "$handle2hgfhgfhgfhgfhgfh")
 }
 
-window_handle_test
+find_elements_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://www.google.com"
+
+  elements=$($driver.findElements "$(ByTagName "a")")
+  echo $($elements.size)
+  element=$($elements.get 24)
+  for ((n = 0; n < $($elements.size); n++)); do
+    echo "$($($elements.get "$n").getText)"
+  done
+  $driver.quit
+}
+
+find_elements_test

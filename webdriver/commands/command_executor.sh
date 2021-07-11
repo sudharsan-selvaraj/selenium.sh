@@ -28,7 +28,7 @@ __FIND_ELEMENTS__() {
   local response=$(__EXECUTE_WD_COMMAND__ "POST" "$endpoint" "${by}")
   __CHECK_AND_THROW_ERROR__ "$response"
   local element_ids=$(echo "$response" | "$jq" -r '.value[] | to_entries[] | "[" + (.key|tostring) + "=" + .value + "]"')
-  __PROCESS_RESPONSE__ "__WEB_ELEMENTS__ ${selenium_address} ${session_id} $(echo $element_ids  | tr '\n' ' ') [end] "
+  __PROCESS_RESPONSE__ "__LIST_TYPE__ __WEB_ELEMENT__ ${selenium_address} ${session_id} [start] $(echo $element_ids  | tr '\n' ' ') [end] "
 
 }
 

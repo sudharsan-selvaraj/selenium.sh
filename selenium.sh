@@ -6,6 +6,8 @@ export jq="/Users/sselvaraj/Desktop/iproov authentication/jq-osx-amd64"
 ##################################################################
 #                       load dependencies                        #
 ##################################################################
+## data types
+source ${SELENIUM_SOURCE_DIR}/webdriver/types/list.sh
 
 ## utils
 source ${SELENIUM_SOURCE_DIR}/utils/try_catch.sh
