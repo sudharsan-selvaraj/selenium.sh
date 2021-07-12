@@ -12,17 +12,17 @@ driver=$(FirefoxDriver)
 #driver=$(RemoteWebDriver --url "http://localhost:4444/wd/hub" --capabilities '{ "browserName": "chrome"  }')
 
 $driver.get "https://www.google.com"
-echo $($driver.getTitle)
+echo $($driver.get_title)
 
 $driver.refresh
 
 $driver.get "https://www.facebook.com"
-echo $($driver.getTitle)
+echo $($driver.get_title)
 
 $driver.back
-echo $($driver.getTitle)
+echo $($driver.get_title)
 
-echo $($($driver.findElement "$(ByCssSelector "a")").getAttribute "href")
+echo $($($driver.find_element "$(ByCssSelector "a")").get_attribute "href")
 
 $driver.forward
 $driver.quit

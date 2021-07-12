@@ -16,6 +16,7 @@ source ${SELENIUM_SOURCE_DIR}/webdriver/types/cookie.sh
 source ${SELENIUM_SOURCE_DIR}/utils/try_catch.sh
 source ${SELENIUM_SOURCE_DIR}/utils/exceptions.sh
 source ${SELENIUM_SOURCE_DIR}/utils/driver_utils.sh
+source ${SELENIUM_SOURCE_DIR}/utils/bash_utils.sh
 
 ## webdriver
 source ${SELENIUM_SOURCE_DIR}/webdriver/commands/index.sh

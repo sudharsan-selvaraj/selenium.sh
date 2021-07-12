@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source "${SELENIUM_SOURCE_DIR}/webdriver/commands/command_executor.sh"
-
 ########################################################################################
 #                                WEBDRIVER METHODS                                     #
 ########################################################################################
@@ -352,8 +350,39 @@ function __DRIVER_GET_COOKIES__() {
   __CHECK_AND_THROW_ERROR__ "$response"
   local tmp_file=$(mktemp)
   local value=$(__HANDLE_VALUE_RESPONSE__ "$response")
-  echo "$value" > $tmp_file
+  echo "$value" >$tmp_file
   local indices=$(echo "$value" | "$jq" -r '. | to_entries[] | (.key) ')
 
   echo "__LIST_TYPE__ __COOKIE__ ${tmp_file} [start] ${indices} [end] "
+}
+
+#######################################################################################
+#                                   SCRIPT METHODS                                    #
+#######################################################################################
+
+function __EXECUTE_SCRIPT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local execution_type=$3
+  local script="$4"
+  local args_start_index=5
+
+  local args_array="["
+  for ((i = args_start_index; i <= $#; i++)); do
+    args_array+="${!i},"
+  done
+  args_array+="]"
+  args_array=$(echo "$args_array" | sed 's/,]$/]/')
+  local body='{ "script" : "'$script'", "args": '$args_array' }'
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/execute/${execution_type}" "$body")
+  __CHECK_AND_THROW_ERROR__ "$response"
+  local processed_response=$(__HANDLE_VALUE_RESPONSE__ "$response")
+
+  if [ "$(__is_json_object__ "$processed_response")" == 1 ]; then
+    echo "$(echo "$processed_response" \
+    | "$jq" -r 'to_entries[] | if (.key | startswith("element")) then "__WEB_ELEMENT__ '${selenium_address}' '${session_id}' ["+.key+"="+.value+"]" else { (.key) : .value  } end') "
+  else
+    echo "$processed_response"
+  fi
 }

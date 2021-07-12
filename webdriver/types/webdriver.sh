@@ -11,19 +11,37 @@ __WEBDRIVER__() {
   ".get_current_url") __DRIVER_GET_URL__ "$selenium_address" "$session_id" ;;
   ".get_title") __DRIVER_GET_TITLE__ "$selenium_address" "$session_id" ;;
   ".get_page_source") __DRIVER_GET_PAGE_SOURCE__ "$selenium_address" "$session_id" ;;
+  ".get_screen_shot") __DRIVER_GET_SCREENSHOT__ "$selenium_address" "$session_id" ;;
+  ".quit") __DRIVER_QUIT__ "$selenium_address" "$session_id" ;;
+  ".close") __DRIVER_CLOSE__ "$selenium_address" "$session_id" ;;
+
+    ###################################################################################
+    #                            NAVIGATION METHODS                                   #
+    ###################################################################################
+
   ".refresh") __DRIVER_PAGE_REFRESH__ "$selenium_address" "$session_id" ;;
   ".back") __DRIVER_NAVIGATE_BACK__ "$selenium_address" "$session_id" ;;
   ".forward") __DRIVER_NAVIGATE_FORWARD__ "$selenium_address" "$session_id" ;;
-  ".get_screen_shot") __DRIVER_GET_SCREENSHOT__ "$selenium_address" "$session_id" ;;
+
+    ###################################################################################
+    #                            ELEMENT METHODS                                      #
+    ###################################################################################
+
   ".get_active_element") __DRIVER_GET_ACTIVE_ELEMENT__ "$selenium_address" "$session_id" ;;
   ".find_element") __DRIVER_FIND_ELEMENT__ "$selenium_address" "$session_id" "${@:4}" ;;
   ".find_elements") __DRIVER_FIND_ELEMENTS__ "$selenium_address" "$session_id" "${@:4}" ;;
+
+    ###################################################################################
+    #                               timeout METHODS                                      #
+    ###################################################################################
+
   ".set_script_timeout") __DRIVER_SET_TIMEOUTS__ "$selenium_address" "$session_id" "script" "$4" ;;
   ".set_script_timeout") __DRIVER_GET_TIMEOUTS__ "$selenium_address" "$session_id" "script" ;;
   ".set_page_load_time") __DRIVER_SET_TIMEOUTS__ "$selenium_address" "$session_id" "pageLoad" "$4" ;;
   ".get_page_load_time") __DRIVER_GET_TIMEOUTS__ "$selenium_address" "$session_id" "pageLoad" ;;
   ".set_implicit_wait") __DRIVER_SET_TIMEOUTS__ "$selenium_address" "$session_id" "implicit" "$4" ;;
   ".get_implicit_wait") __DRIVER_GET_TIMEOUTS__ "$selenium_address" "$session_id" "implicit" ;;
+
     ###################################################################################
     #                               WINDOW METHODS                                    #
     ###################################################################################
@@ -42,9 +60,18 @@ __WEBDRIVER__() {
   ".window.fullscreen") __DRIVER_WINDOW_FULLSCREEN__ "$selenium_address" "$session_id" ;;
   ".window.maximize") __DRIVER_WINDOW_MAXIMIZE__ "$selenium_address" "$session_id" ;;
   ".window.minimize") __DRIVER_WINDOW_MINIMIZE__ "$selenium_address" "$session_id" ;;
+
+    ###################################################################################
+    #                               COOKIE METHODS                                    #
+    ###################################################################################
   ".get_cookies") __DRIVER_GET_COOKIES__ "$selenium_address" "$session_id" ;;
-  ".quit") __DRIVER_QUIT__ "$selenium_address" "$session_id" ;;
-  ".close") __DRIVER_CLOSE__ "$selenium_address" "$session_id" ;;
+
+    ###################################################################################
+    #                               SCRIPT METHODS                                    #
+    ###################################################################################
+  ".execute_script") __EXECUTE_SCRIPT__ "$selenium_address" "$session_id" "sync" "$4" "${@:5}";;
+  ".execute_async_script") __EXECUTE_SCRIPT__ "$selenium_address" "$session_id" "async" "$4" "${@:5}";;
+
   esac
 
 }

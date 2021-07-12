@@ -67,7 +67,7 @@ window_handle_test() {
   $driver.get "https://www.google.com"
   local handle=$($driver.get_window_handle)
   echo "$handle"
-  echo $($driver.switchTo.window "$handle2hgfhgfhgfhgfhgfh")
+  echo $($driver.switch_to.window "$handle2hgfhgfhgfhgfhgfh")
 }
 
 window_handles_test() {
@@ -76,7 +76,7 @@ window_handles_test() {
   $($driver.find_element "$(ByPartialLinkText "Click Here")").click
   local handle=$($driver.get_window_handles)
   echo "$($handle.size)"
-  $driver.switchTo.window $($handle.get 2)
+  $driver.switch_to.window $($handle.get 2)
   echo "$($driver.getTitle)"
   $driver.quit
 }
@@ -127,10 +127,10 @@ frame_switch_test() {
 
   #echo $($driver.find_element "$(ByCssSelector "iframe")")
 
-  $driver.switchTo.frame "$($($driver.find_element "$(ByCssSelector "iframe")").get_element)"
+  $driver.switch_to.frame "$($($driver.find_element "$(ByCssSelector "iframe")").get_element)"
   echo $($($driver.find_element "$(ById "tinymce")").get_text)
 
-  $driver.switchTo.default_content
+  $driver.switch_to.default_content
 
   text=$($($driver.find_element "$(ById "tinymce")").get_text)
   echo $text
@@ -160,4 +160,18 @@ cookies_test() {
   $driver.quit
 }
 
-cookies_test
+execute_script_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+  body=$($driver.execute_script 'return document.querySelector(\"#page-footer\")')
+  echo $($body.get_text)
+}
+
+execute_async_script_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+  body=$($driver.execute_async_script 'var callback=arguments[arguments.length-1]; return setTimeout(function(){ callback(document.querySelector(\"body\")) }, 3000)')
+  echo $($body.get_text)
+}
+
+execute_async_script_test
