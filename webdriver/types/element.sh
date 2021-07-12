@@ -13,6 +13,9 @@ __WEB_ELEMENT__() {
   ".id")
     __PROCESS_RESPONSE__ "$element_id"
     ;;
+  ".get_element")
+    echo '{ "'${element_ref_id}'" : "'${element_id}'" }'
+    ;;
   ".findElement")
     __ELEMENT_FIND_ELEMENT__ "$selenium_address" "$session_id" "$element_id" "${@:5}"
     ;;

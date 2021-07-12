@@ -28,17 +28,17 @@ find_elements_response_test() {
 
 test_timeout() {
   driver=$(ChromeDriver)
-  echo $($driver.getImplicitWait)
-  echo $($driver.getPageLoadTime)
-  echo $($driver.getScriptTimeout)
+  echo $($driver.get_implicit_wait)
+  echo $($driver.get_page_load_time)
+  echo $($driver.get_script_timeout)
 
-  $driver.setImplicitWait 10000
-  $driver.setPageLoadTime 10000
-  $driver.setScriptTimeout 10000
+  $driver.set_implicit_wait 10000
+  $driver.set_page_load_time 10000
+  $driver.set_script_timeout 10000
 
-  echo $($driver.getImplicitWait)
-  echo $($driver.getPageLoadTime)
-  echo $($driver.getScriptTimeout)
+  echo $($driver.get_implicit_wait)
+  echo $($driver.get_page_load_time)
+  echo $($driver.get_script_timeout)
 
   $driver.quit
 }
@@ -46,10 +46,10 @@ test_timeout() {
 test_url() {
   driver=$(ChromeDriver)
   $driver.get "https://www.google.com"
-  echo $($driver.getCurrentUrl)
+  echo $($driver.get_current_url)
 
   $driver.get "https://www.facebook.com"
-  echo $($driver.getCurrentUrl)
+  echo $($driver.get_current_url)
   $driver.quit
 }
 
@@ -65,22 +65,99 @@ window_test() {
 window_handle_test() {
   driver=$(ChromeDriver)
   $driver.get "https://www.google.com"
-  local handle=$($driver.getWindowHandle)
+  local handle=$($driver.get_window_handle)
   echo "$handle"
   echo $($driver.switchTo.window "$handle2hgfhgfhgfhgfhgfh")
+}
+
+window_handles_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/windows"
+  $($driver.find_element "$(ByPartialLinkText "Click Here")").click
+  local handle=$($driver.get_window_handles)
+  echo "$($handle.size)"
+  $driver.switchTo.window $($handle.get 2)
+  echo "$($driver.getTitle)"
+  $driver.quit
 }
 
 find_elements_test() {
   driver=$(ChromeDriver)
   $driver.get "https://www.google.com"
 
-  elements=$($driver.findElements "$(ByTagName "a")")
+  elements=$($driver.find_elements "$(ByTagName "a")")
   echo $($elements.size)
   element=$($elements.get 24)
   for ((n = 0; n < $($elements.size); n++)); do
-    echo "$($($elements.get "$n").getText)"
+    echo "$($($elements.get "$n").get_text)"
   done
   $driver.quit
 }
 
-find_elements_test
+new_window_tab_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://www.google.com"
+  $driver.open_new_window
+  local handle=$($driver.get_window_handles)
+  echo "$($handle.size)"
+
+  $driver.open_new_tab
+  local handle=$($driver.get_window_handles)
+  echo "$($handle.size)"
+}
+
+window_position_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://www.google.com"
+
+  $driver.set_window_rect '{ "x" : 45 , "y": 90 }'
+  $driver.set_window_rect '{ "width" : 900 , "height": 700 }'
+
+  echo "X = $($driver.get_window_x_position)"
+  echo "Y = $($driver.get_window_y_position)"
+  echo "width = $($driver.get_width)"
+  echo "height = $($driver.get_height)"
+
+  $driver.quit
+}
+
+frame_switch_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+
+  #echo $($driver.find_element "$(ByCssSelector "iframe")")
+
+  $driver.switchTo.frame "$($($driver.find_element "$(ByCssSelector "iframe")").get_element)"
+  echo $($($driver.find_element "$(ById "tinymce")").get_text)
+
+  $driver.switchTo.default_content
+
+  text=$($($driver.find_element "$(ById "tinymce")").get_text)
+  echo $text
+  $driver.quit
+}
+
+test_regex() {
+  local number="3"
+  if [[ $number =~ ^-?[0-9]+$ ]]; then
+    echo "isNumber"
+  fi
+}
+
+active_element_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+
+  echo $($($driver.get_active_element).get_text)
+
+  $driver.quit
+}
+
+cookies_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+  echo $($($($driver.get_cookies).get 1).httpOnly)
+  $driver.quit
+}
+
+cookies_test

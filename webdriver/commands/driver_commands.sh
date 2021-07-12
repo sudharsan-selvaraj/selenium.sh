@@ -120,6 +120,19 @@ function __DRIVER_FIND_ELEMENT__() {
 }
 
 ##
+## Method to find the active element
+##
+function __DRIVER_GET_ACTIVE_ELEMENT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/element/active")
+  __CHECK_AND_THROW_ERROR__ "$response"
+  local element_ref=$(__HANDLE_FIND_ELEMENT_RESPONSE__ "$response")
+  echo "__WEB_ELEMENT__ ${selenium_address} ${session_id} ${element_ref} "
+}
+
+##
 ## Method to find element
 ##
 function __DRIVER_FIND_ELEMENTS__() {
@@ -164,7 +177,7 @@ function __DRIVER_GET_TIMEOUTS__() {
   local timeout_name="$3"
 
   local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/timeouts")
-  __HANDLE_TIMEOUT_RESPONSE__ "$response" "$timeout_name"
+  __HANDLE_DYNAMIC_KEY_RESPONSE__ "$response" "$timeout_name"
 }
 
 ##
@@ -188,7 +201,31 @@ function __DRIVER_SET_TIMEOUTS__() {
 ###############################################################################################
 
 ##
-## Get current window handles
+## Creates new tab
+##
+function __DRIVER_CREATE_NEW_TAB__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local body='{ "type" : "tab" }'
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/new" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Creates new window
+##
+function __DRIVER_CREATE_NEW_WINDOW__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local body='{ "type" : "window" }'
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/new" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Get current window handle
 ##
 function __DRIVER_GET_WINDOW_HANDLE__() {
   local BASE_URL=$1
@@ -196,6 +233,17 @@ function __DRIVER_GET_WINDOW_HANDLE__() {
 
   local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/window")
   __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Get all window handles
+##
+function __DRIVER_GET_WINDOW_HANDLES__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/window/handles")
+  __HANDLE_ARRAY_RESPONSE__ "$response"
 }
 
 ##
@@ -242,4 +290,70 @@ function __DRIVER_WINDOW_MINIMIZE__() {
 
   local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/minimize" "{}")
   __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Get window location and size
+##
+function __GET_WINDOW_RECT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local value="$3"
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/window/rect")
+  __HANDLE_DYNAMIC_KEY_RESPONSE__ "$response" "$3"
+}
+
+##
+## Set window position
+##
+function __SET_WINDOW_RECT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local body="$3"
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/window/rect" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Switch frame by index
+##
+function __DRIVER_SWITCH_FRAME__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local id="$3"
+
+  local body='{ "id" : '$id' }'
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/frame" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Switch frame by index
+##
+function __DRIVER_SWITCH_PARENT_FRAME__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/frame/parent" "{}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+#######################################################################################
+#                                   COOKIES                                           #
+#######################################################################################
+
+function __DRIVER_GET_COOKIES__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/cookie")
+  __CHECK_AND_THROW_ERROR__ "$response"
+  local tmp_file=$(mktemp)
+  local value=$(__HANDLE_VALUE_RESPONSE__ "$response")
+  echo "$value" > $tmp_file
+  local indices=$(echo "$value" | "$jq" -r '. | to_entries[] | (.key) ')
+
+  echo "__LIST_TYPE__ __COOKIE__ ${tmp_file} [start] ${indices} [end] "
 }

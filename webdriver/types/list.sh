@@ -24,7 +24,13 @@ __LIST_TYPE__() {
       __CHECK_AND_THROW_ERROR__ "__EXCEPTION__ $EXCEPTION INDEX_OUT_OF_BOUND 'Index: ${index}, Size: ${total_size}' [end] "
     fi
     local entity=${args[$(echo $((start_index + index)))]}
-    __PROCESS_RESPONSE__ "$actual_type ${@:2:$(( start_index - 2 ))} ${entity} "
+    local prefix=""
+    local suffix=""
+    if [[ "$actual_type" == "__"* ]]; then
+            prefix="$1 ${@:2:$(( start_index - 2 ))} "
+            suffix=" "
+    fi
+    __PROCESS_RESPONSE__ "${prefix}${entity}${suffix}"
     ;;
   ".size")
     echo "$total_size"

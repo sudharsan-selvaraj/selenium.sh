@@ -15,7 +15,7 @@ __FIND_ELEMENT__() {
     endpoint="${search_context}/element/${element_id}/element"
   done
 
-  echo "__WEB_ELEMENT__ ${selenium_address} ${session_id} ${element_id} "
+  echo "__WEB_ELEMENT__ ${selenium_address} ${session_id} ${element_ref} "
 }
 
 __FIND_ELEMENTS__() {
@@ -62,9 +62,15 @@ __HANDLE_FIND_ELEMENT_RESPONSE__() {
   __PROCESS_RESPONSE__ "$(echo "$1" | "$jq" -r '.value | to_entries | map("[\(.key)=\(.value)]") | .[] ')"
 }
 
-__HANDLE_TIMEOUT_RESPONSE__() {
+__HANDLE_DYNAMIC_KEY_RESPONSE__() {
   __CHECK_AND_THROW_ERROR__ "$1"
   __PROCESS_RESPONSE__ "$(echo "$1" | "$jq" -r '.value.'$2'')"
+}
+
+__HANDLE_ARRAY_RESPONSE__() {
+  __CHECK_AND_THROW_ERROR__ "$1"
+  local processed_response=$(echo "$1" | "$jq" -r '.value | .[]')
+  __PROCESS_RESPONSE__ "__LIST_TYPE__ ${@:2} [start] $processed_response [end] "
 }
 
 #######################################################################################

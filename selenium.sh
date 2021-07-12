@@ -8,6 +8,9 @@ export jq="/Users/sselvaraj/Desktop/iproov authentication/jq-osx-amd64"
 ##################################################################
 ## data types
 source ${SELENIUM_SOURCE_DIR}/webdriver/types/list.sh
+source ${SELENIUM_SOURCE_DIR}/webdriver/types/webdriver.sh
+source ${SELENIUM_SOURCE_DIR}/webdriver/types/element.sh
+source ${SELENIUM_SOURCE_DIR}/webdriver/types/cookie.sh
 
 ## utils
 source ${SELENIUM_SOURCE_DIR}/utils/try_catch.sh
@@ -17,8 +20,6 @@ source ${SELENIUM_SOURCE_DIR}/utils/driver_utils.sh
 ## webdriver
 source ${SELENIUM_SOURCE_DIR}/webdriver/commands/index.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/by.sh
-source ${SELENIUM_SOURCE_DIR}/webdriver/webdriver.sh
-source ${SELENIUM_SOURCE_DIR}/webdriver/element.sh
 
 ## drivers
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/remote_webdriver.sh
