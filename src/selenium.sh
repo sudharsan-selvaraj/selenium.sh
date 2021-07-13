@@ -17,6 +17,7 @@ source ${SELENIUM_SOURCE_DIR}/utils/try_catch.sh
 source ${SELENIUM_SOURCE_DIR}/utils/exceptions.sh
 source ${SELENIUM_SOURCE_DIR}/utils/driver_utils.sh
 source ${SELENIUM_SOURCE_DIR}/utils/bash_utils.sh
+source ${SELENIUM_SOURCE_DIR}/utils/http_provider.sh
 
 ## webdriver
 source ${SELENIUM_SOURCE_DIR}/webdriver/commands/index.sh
@@ -26,17 +27,3 @@ source ${SELENIUM_SOURCE_DIR}/webdriver/by.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/remote_webdriver.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/chromedriver.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/firefoxdriver.sh
-
-## Check and load the respective HTTP provided between cURL and wget
-function load_http_provider() {
-  if [ -x "$(which wget)" ]; then
-    . ${SELENIUM_SOURCE_DIR}/http_provider/wget_provider.sh
-  elif [ -x "$(which curl)" ]; then
-    . ${SELENIUM_SOURCE_DIR}/http_provider/curl_provider.sh
-  else
-    echo "Could not find curl or wget, please install one." >&2
-  fi
-}
-
-# Source the respective HTTP provider
-load_http_provider

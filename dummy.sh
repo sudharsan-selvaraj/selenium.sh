@@ -1,6 +1,6 @@
 export jq="/Users/sselvaraj/Desktop/iproov authentication/jq-osx-amd64"
-. selenium.sh
-. packages/webdriver-manager/webdriver_manager.sh
+. src/selenium.sh
+. src/packages/webdriver-manager/webdriver_manager.sh
 
 webdrivermanager --browser "chrome"
 

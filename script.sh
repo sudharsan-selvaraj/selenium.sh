@@ -1,5 +1,5 @@
-. selenium.sh
-. packages/webdriver-manager/webdriver_manager.sh
+. src/selenium.sh
+. src/packages/webdriver-manager/webdriver_manager.sh
 
 webdrivermanager --browser "chrome"
 webdrivermanager --browser "firefox"
