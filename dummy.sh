@@ -156,7 +156,16 @@ active_element_test() {
 cookies_test() {
   driver=$(ChromeDriver)
   $driver.get "https://the-internet.herokuapp.com/iframe"
-  echo $($($($driver.get_cookies).get 1).httpOnly)
+  echo $($($($driver.get_cookies).get 4).name)
+  $driver.quit
+}
+
+cookie_by_name_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+  echo $($($driver.get_cookie "rack.session").value)
+  $driver.delete_cookie "rack.session"
+  echo $($($driver.get_cookie "rack.session").value)
   $driver.quit
 }
 
@@ -174,4 +183,74 @@ execute_async_script_test() {
   echo $($body.get_text)
 }
 
-execute_async_script_test
+cookie_add_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+  $driver.add_cookie '{
+  "domain": "the-internet.herokuapp.com",
+  "httpOnly": true,
+  "name": "sudharsan",
+  "path": "/",
+  "secure": false,
+  "value": "sudharsan_selvaraj"
+}
+'
+  echo $($($driver.get_cookie "sudharsan").value)
+  $driver.quit
+}
+
+cookie_delete_all_test() {
+  driver=$(ChromeDriver)
+  $driver.get "https://the-internet.herokuapp.com/iframe"
+  $driver.add_cookie '{
+  "domain": "the-internet.herokuapp.com",
+  "httpOnly": true,
+  "name": "sudharsan",
+  "path": "/",
+  "secure": false,
+  "value": "sudharsan_selvaraj"
+}
+'
+  echo $($($driver.get_cookie "sudharsan").value)
+  $driver.delete_cookie "sudharsan"
+  echo $($($driver.get_cookie "sudharsan").value)
+
+  $driver.add_cookie '{
+  "domain": "the-internet.herokuapp.com",
+  "httpOnly": true,
+  "name": "sudharsan",
+  "path": "/",
+  "secure": false,
+  "value": "sudharsan_selvaraj"
+}
+'
+  echo $($($driver.get_cookie "sudharsan").value)
+  $driver.delete_cookies
+  echo $($($driver.get_cookie "sudharsan").value)
+
+  $driver.quit
+}
+
+alert_accept() {
+  driver=$(ChromeDriver)
+  $driver.execute_script 'setTimeout(()=>{ var name = prompt(\"Please enter your name\"); console.log(name) }, 4000)'
+  sleep 10
+  $driver.alert.accept
+}
+
+alert_dismiss() {
+driver=$(ChromeDriver)
+  $driver.execute_script 'setTimeout(()=>{ var name = prompt(\"Please enter your name\"); console.log(name) }, 4000)'
+  sleep 10
+  $driver.alert.dismiss
+}
+
+alert_settext() {
+  driver=$(ChromeDriver)
+  $driver.execute_script 'setTimeout(()=>{ var name = prompt(\"Please enter your name\"); console.log(name) }, 4000)'
+  sleep 10
+  $driver.alert.set_text "sudharsan_selvaraj"
+  echo "$($driver.alert.get_text)"
+}
+
+alert_dismiss

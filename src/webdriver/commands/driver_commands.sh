@@ -31,6 +31,15 @@ function __DRIVER_NAVIGATE_TO__() {
 }
 
 ##
+## Method to get the current session id
+##
+function __DRIVER_GET_SESSION_ID__() {
+  local SESSION_ID=$2
+
+  __PROCESS_RESPONSE__ "$2"
+}
+
+##
 ## Method to get the current URL
 ##
 function __DRIVER_GET_URL__() {
@@ -342,6 +351,9 @@ function __DRIVER_SWITCH_PARENT_FRAME__() {
 #                                   COOKIES                                           #
 #######################################################################################
 
+##
+## Method to return all cookies from browser
+##
 function __DRIVER_GET_COOKIES__() {
   local BASE_URL=$1
   local SESSION_ID=$2
@@ -354,6 +366,106 @@ function __DRIVER_GET_COOKIES__() {
   local indices=$(echo "$value" | "$jq" -r '. | to_entries[] | (.key) ')
 
   echo "__LIST_TYPE__ __COOKIE__ ${tmp_file} [start] ${indices} [end] "
+}
+
+##
+## Method to return a cookie by name
+##
+function __DRIVER_GET_COOKIE_BY_NAME__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+  local cookie_name=$3
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/cookie/${cookie_name}")
+  __CHECK_AND_THROW_ERROR__ "$response"
+  local tmp_file=$(mktemp)
+  local value=$(__HANDLE_VALUE_RESPONSE__ "$response")
+  echo "[$value]" >$tmp_file
+  echo "__COOKIE__ ${tmp_file} 0 "
+}
+
+##
+## Method to add a cookie
+##
+function __DRIVER_ADD_COOKIE__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local body='{ "cookie": '$3' }'
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/cookie" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to delete a cookie by name
+##
+function __DRIVER_DELETE_COOKIE__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "DELETE" "${BASE_URL}/session/${SESSION_ID}/cookie/$3")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to delete all cookies
+##
+function __DRIVER_DELETE_COOKIES__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "DELETE" "${BASE_URL}/session/${SESSION_ID}/cookie")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+#######################################################################################
+#                                   ALERT METHODS                                     #
+#######################################################################################
+
+##
+## Method to accept an alert
+##
+function __DRIVER_ALERT_ACCEPT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/alert/accept" "{}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to dismiss an alert
+##
+function __DRIVER_ALERT_DISMISS__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/alert/dismiss" "{}")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to get text from the alert
+##
+function __DRIVER_ALERT_GET_TEXT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local response=$(__EXECUTE_WD_COMMAND__ "GET" "${BASE_URL}/session/${SESSION_ID}/alert/text")
+  __HANDLE_VALUE_RESPONSE__ "$response"
+}
+
+##
+## Method to send value from the alert
+##
+function __DRIVER_ALERT_SET_TEXT__() {
+  local BASE_URL=$1
+  local SESSION_ID=$2
+
+  local body='{ "text" : "'$3'" }'
+  echo "$body" >>response.txt
+  local response=$(__EXECUTE_WD_COMMAND__ "POST" "${BASE_URL}/session/${SESSION_ID}/alert/text" "$body")
+  __HANDLE_VALUE_RESPONSE__ "$response"
 }
 
 #######################################################################################
@@ -380,8 +492,8 @@ function __EXECUTE_SCRIPT__() {
   local processed_response=$(__HANDLE_VALUE_RESPONSE__ "$response")
 
   if [ "$(__is_json_object__ "$processed_response")" == 1 ]; then
-    echo "$(echo "$processed_response" \
-    | "$jq" -r 'to_entries[] | if (.key | startswith("element")) then "__WEB_ELEMENT__ '${selenium_address}' '${session_id}' ["+.key+"="+.value+"]" else { (.key) : .value  } end') "
+    echo "$(echo "$processed_response" |
+      "$jq" -r 'to_entries[] | if (.key | startswith("element")) then "__WEB_ELEMENT__ '${selenium_address}' '${session_id}' ["+.key+"="+.value+"]" else { (.key) : .value  } end') "
   else
     echo "$processed_response"
   fi

@@ -7,6 +7,7 @@ __WEBDRIVER__() {
   local method="$3"
 
   case "$method" in
+  ".get_session_id") __DRIVER_GET_SESSION_ID__ "$2" ;;
   ".get") __DRIVER_NAVIGATE_TO__ "$selenium_address" "$session_id" "$4" ;;
   ".get_current_url") __DRIVER_GET_URL__ "$selenium_address" "$session_id" ;;
   ".get_title") __DRIVER_GET_TITLE__ "$selenium_address" "$session_id" ;;
@@ -65,6 +66,18 @@ __WEBDRIVER__() {
     #                               COOKIE METHODS                                    #
     ###################################################################################
   ".get_cookies") __DRIVER_GET_COOKIES__ "$selenium_address" "$session_id" ;;
+  ".get_cookie") __DRIVER_GET_COOKIE_BY_NAME__ "$selenium_address" "$session_id" "$4";;
+  ".add_cookie") __DRIVER_ADD_COOKIE__ "$selenium_address" "$session_id" "$4";;
+  ".delete_cookie") __DRIVER_DELETE_COOKIE__ "$selenium_address" "$session_id" "$4";;
+  ".delete_cookies") __DRIVER_DELETE_COOKIES__ "$selenium_address" "$session_id";;
+
+    ###################################################################################
+    #                               ALERT METHODS                                    #
+    ###################################################################################
+  ".alert.accept") __DRIVER_ALERT_ACCEPT__ "$selenium_address" "$session_id" ;;
+  ".alert.dismiss") __DRIVER_ALERT_DISMISS__ "$selenium_address" "$session_id" ;;
+  ".alert.get_text") __DRIVER_ALERT_GET_TEXT__ "$selenium_address" "$session_id" ;;
+  ".alert.set_text") __DRIVER_ALERT_SET_TEXT__ "$selenium_address" "$session_id" "$4";;
 
     ###################################################################################
     #                               SCRIPT METHODS                                    #
