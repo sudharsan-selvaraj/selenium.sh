@@ -1,4 +1,4 @@
-. "../bootstrap.sh"
+. bootstrap.sh
 
 cache_dir="${HOME}/.cache/selenium-sh"
 

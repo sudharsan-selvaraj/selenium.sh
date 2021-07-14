@@ -1,5 +1,5 @@
 export CACHE_DIR="$HOME/.cache/selenium-sh"
-export VERSIONS_JSON="https://raw.githubusercontent.com/sudharsan-selvaraj/selenium.sh/main/packages/webdriver-manager/versions.json?token=AEZUHUJGYIWE6433QHJ3MGDA47CW4"
+export VERSIONS_JSON="https://raw.githubusercontent.com/sudharsan-selvaraj/selenium.sh/main/src/packages/webdriver-manager/versions.json"
 
 function main() {
   while [[ $# -gt 0 ]]; do
@@ -124,8 +124,7 @@ function __json_parser__() {
 
 function __get_driver_version__() {
   local browser_name="$1"
-  local versions=$(cat "$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)/versions.json")
-  #  let versions=$(curl -s -X "GET" "$VERSIONS_JSON")
+  local versions=$(curl -sSL "$VERSIONS_JSON")
   local driver_version=$(__json_parser__ "$versions" "$browser_name")
   echo "$driver_version"
 }
