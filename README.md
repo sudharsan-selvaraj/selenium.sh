@@ -1,12 +1,29 @@
 # selenium.sh
 
-## Example
+## Installation
 
+1. create a new directory or cd to any existing directory where that tests are present,
+
+```sh
+mkdir tests && cd tests
+```
+
+2. Run the below command in terminal
+
+```sh
+curl -sSL https://raw.githubusercontent.com/sudharsan-selvaraj/selenium.sh/main/install.sh | bash
+```
+
+This will create a new directory `selenium` and download the lib inside it
+
+3. Create a script file `tests.sh` and copy the below script
+
+```shell
 ```sh
 #!/usr/bin/env bash
 
 #import selenium
-source /lib/selenium.sh
+source selenium/selenium.sh
 
 # it will download the respective chromedriver based on installed chrome version
 webdrivermanager --browser "chrome"
@@ -42,8 +59,14 @@ catch || {
 $driver.quit
 ```
 
-## Installation
+4. Make sure to assign executable permission to the file
 
+```shell
+chmod +x script.sh
 ```
-Will be added soon
+
+5. Run the script file
+
+```shell
+./script.sh
 ```
