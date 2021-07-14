@@ -23,6 +23,10 @@ function ChromeDriver() {
     esac
   done
 
+  if [ ! -f "$driver_path" ]; then
+    __CHECK_AND_THROW_ERROR__ '__EXCEPTION__ '$EXCEPTION' CHROME_DRIVER_NOT_FOUND "Kindly add the path chrome driver in CHROME_DRIVER_PATH environment variable"'
+  fi
+
   __chrome_driver_start__ "$driver_path" "$chrome_options"
 }
 

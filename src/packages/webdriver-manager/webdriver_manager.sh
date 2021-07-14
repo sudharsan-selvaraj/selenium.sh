@@ -146,7 +146,6 @@ function chromedriver() {
 
   if [ -f "${download_directory}/chromedriver" ]; then
     export CHROME_DRIVER_PATH="${download_directory}/chromedriver"
-    echo "Using chromedriver from ${CHROME_DRIVER_PATH}"
   else
     mkdir -p ${download_directory}
     download_url=$(echo "$download_url" | sed 's/{driver_version}/'${driver_version}'/')
@@ -183,7 +182,7 @@ function firefoxdriver() {
     mkdir -p ${download_directory}
     local curl_output=$($(cd "$download_directory" && (curl -sSL "$download_url") > ${driver_file_name}) && echo "${download_directory}")
     if [ ! -z "${curl_output}" ]; then
-      $(cd ${download_directory} && tar -xvzf "${driver_file_name}" &1>/dev/null)
+      $(cd ${download_directory} && tar -xvzf "${driver_file_name}" &>/dev/null)
       export FIREFOX_DRIVER_PATH="${download_directory}/geckodriver"
     fi
   fi

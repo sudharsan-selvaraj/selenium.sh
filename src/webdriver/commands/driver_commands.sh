@@ -34,9 +34,9 @@ function __DRIVER_NAVIGATE_TO__() {
 ## Method to get the current session id
 ##
 function __DRIVER_GET_SESSION_ID__() {
-  local SESSION_ID=$2
+  local SESSION_ID=$1
 
-  __PROCESS_RESPONSE__ "$2"
+  __PROCESS_RESPONSE__ "$1"
 }
 
 ##
@@ -492,9 +492,9 @@ function __EXECUTE_SCRIPT__() {
   local processed_response=$(__HANDLE_VALUE_RESPONSE__ "$response")
 
   if [ "$(__is_json_object__ "$processed_response")" == 1 ]; then
-    echo "$(echo "$processed_response" |
+    __PROCESS_RESPONSE__ "$(echo "$processed_response" |
       "$jq" -r 'to_entries[] | if (.key | startswith("element")) then "__WEB_ELEMENT__ '${selenium_address}' '${session_id}' ["+.key+"="+.value+"]" else { (.key) : .value  } end') "
   else
-    echo "$processed_response"
+    __PROCESS_RESPONSE__ "$processed_response"
   fi
 }

@@ -23,6 +23,10 @@ function FirefoxDriver() {
     esac
   done
 
+  if [ ! -f "$driver_path" ]; then
+    __CHECK_AND_THROW_ERROR__ '__EXCEPTION__ '$EXCEPTION' FIREFOX_DRIVER_NOT_FOUND "Kindly add the path to firefox driver in FIREFOX_DRIVER_PATH environment variable"'
+  fi
+
   __start_firefox_driver__ "$driver_path" "$firefox_option"
 }
 

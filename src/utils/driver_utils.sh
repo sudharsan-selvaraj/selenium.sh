@@ -10,7 +10,7 @@ __get_free_port__() {
 __start_driver__() {
   local driver_path="$1"
   local port="$2"
-
+  
   "$driver_path" --port="$port" &>/dev/null &
 
   local PID="$!"
