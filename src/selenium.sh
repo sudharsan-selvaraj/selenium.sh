@@ -1,7 +1,7 @@
 export SELENIUM_SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 ## export executable path of jq library
-export jq="/Users/sselvaraj/Desktop/iproov authentication/jq-osx-amd64"
+export jq="${SELENIUM_SOURCE_DIR}/bin/jq"
 
 ##################################################################
 #                       load dependencies                        #
