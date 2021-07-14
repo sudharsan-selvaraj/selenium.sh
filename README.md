@@ -18,7 +18,6 @@ This will create a new directory `selenium` and download the lib inside it
 
 3. Create a script file `tests.sh` and copy the below script
 
-```shell
 ```sh
 #!/usr/bin/env bash
 
@@ -28,17 +27,11 @@ source selenium/selenium.sh
 # it will download the respective chromedriver based on installed chrome version
 webdrivermanager --browser "chrome"
 
-#create an instance of chromedriver
 driver=$(ChromeDriver)
-
 $driver.get "https://www.google.com"
-
 search_input=$($driver.find_element "$(by_name "q")")
-
 $search_input.send_keys "TestNinja"
-
 entered_text=$($driver.execute_script "return arguments[0].value" "$($search_input.get_element)")
-
 echo "Entered search string: $entered_text"
 
 # Support for try/catch specific webdriver exception
