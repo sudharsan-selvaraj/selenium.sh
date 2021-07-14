@@ -27,3 +27,6 @@ source ${SELENIUM_SOURCE_DIR}/webdriver/by.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/remote_webdriver.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/chromedriver.sh
 source ${SELENIUM_SOURCE_DIR}/webdriver/drivers/firefoxdriver.sh
+
+## Packages
+source ${SELENIUM_SOURCE_DIR}/packages/webdriver-manager/webdriver_manager.sh
